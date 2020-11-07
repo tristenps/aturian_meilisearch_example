@@ -38,6 +38,7 @@ router.post('/', async (req, res, next) => {
     await client.getIndex(value.indexName).updateAttributesForFaceting([
       'client_id',
       'doc_type',
+      'doc_id',
     ]);
     res.json({
       message: `Index: '${value.indexName}' has been created.`,
