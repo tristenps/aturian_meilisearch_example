@@ -1,0 +1,4 @@
+{
+  "indexName": "orders",
+  "primaryKey":"doc_id"
+}
