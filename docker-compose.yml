@@ -9,7 +9,7 @@ services:
     command: []
 
   meili:
-    image: getmeili/meilisearch:latest
+    image: getmeili/meilisearch
     ports:
       - "81:7700"
     volumes:
