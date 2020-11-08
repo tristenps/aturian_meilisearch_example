@@ -18,7 +18,7 @@ require('dotenv').config();
 
 // Connect to MeiliSearch Client
 const client = new MeiliSearch({
-  host: `http://127.0.0.1:${process.env.MEILISEARCH_PORT}`,
+  host: process.env.MEILI_DOCKER_URL,
 });
 
 // Creeate Router to assign APIs
