@@ -3,6 +3,7 @@
 ## Instructions to Run
 ```bash
 git clone https://github.com/tristenps/aturian_meilisearch_example.git
+mv .env.example .env
 docker-compose up -d
 ```
 Note: this will create a peristant datafile within the cloned repo.
