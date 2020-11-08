@@ -13,7 +13,7 @@ Note: this will create a peristant datafile within the cloned repo.
 #### Create an index
 ##### POST: http://localhost:80/api/v1/index/
 Request Body:
-```json
+```
 {
   "indexName" : "orders", // Required, provides name for index
   "primaryKey" : "doc_id" // Required, primaryKey will be used for update and uniqueness
@@ -28,7 +28,7 @@ This will return all created indices.
 You will need to have created an index before you can post/get any documents.
 ##### POST: http://localhost:80/api/v1/:indexName/documents
 Request Body:
-```json
+```
 {
   "documents": [
     {
@@ -42,7 +42,7 @@ Request Body:
 ```
 #### Get all documents within an index
 ##### GET: http://localhost:80/api/v1/:indexName/documents
-```json
+```
 {
   "limit": 30 // Optional, defaults to return first 50 documents
 }
@@ -51,7 +51,7 @@ Request Body:
 ### Search
 #### Run a search and get documents
 ##### GET: http://localhost:80/api/v1/:indexName/search
-```json
+```
 {
   "searchParams": {
     "query": "1234",
