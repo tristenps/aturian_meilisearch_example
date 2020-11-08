@@ -1,19 +1,19 @@
 {
   "documents": [
     {
-      "doc_id": "12348",
-      "doc_type": "order",
+      "doc_id": "12348-01",
+      "doc_type": "invoice",
       "client_id": "ib",
-      "order_no": "12346",
-      "order_status": "Open",
-      "order_date":"",
-      "order_tags":"",
-      "order_jobid":"",
-      "order_total": 600.00,
-      "order_sp": "John Smith",
-      "order_csr": "Anna Kendrick",
-      "order_pby": "John Smith",
-      "order_flag": "Rush",
+      "inv_no": "12348-01",
+      "inv_status": "Open",
+      "inv_date":"",
+      "inv_due_date":"",
+      "inv_jobid":"",
+      "inv_total": 600.00,
+      "inv_sp": "John Smith",
+      "inv_cby": "John Smith",
+      "inv_bill_addr": "full address",
+      "inv_spec_inst": "",
       "cust_name": "",
       "cust_cont_name": "",
       "cust_no": "",
@@ -33,11 +33,7 @@
           "item_deco_detail": "Art Name / Imprint Type / Location / file.txt",
           "item_type": "DRPS",
           "item_tracking": "1z12341234",
-          "item_shipto": "full address",
-          "item_cust_comm": "",
-          "item_supp_comm": "",
-          "item_deco_comm": "",
-          "item_wh_comm": ""
+          "item_shipto": "full address"
         }
       ]
     }
