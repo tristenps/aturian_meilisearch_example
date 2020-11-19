@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: meili
+  name: meili
+spec:
+  ports:
+    - name: "81"
+      port: 81
+      targetPort: 7700
+  selector:
+    io.kompose.service: meili
+status:
+  loadBalancer: {}
