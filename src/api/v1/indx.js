@@ -3,8 +3,7 @@ const MeiliSearch = require('meilisearch');
 const Joi = require('joi');
 
 const schema = Joi.object({
-  indexName: Joi.string().alphanum().required(),
-  primaryKey: Joi.string().required(),
+  client_id: Joi.string().alphanum().required(),
 });
 
 // Config all process.env variables based on .env
@@ -32,21 +31,23 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const value = await schema.validateAsync(req.body);
-    await client.createIndex(value.indexName, {
-      primaryKey: value.primaryKey,
+    await client.createIndex(value.client_id, {
+      primaryKey: 'doc_id',
     });
-    await client.getIndex(value.indexName).updateAttributesForFaceting([
+    // TODO: Create definitive list of faceted attributes
+    await client.getIndex(value.client_id).updateAttributesForFaceting([
       'client_id',
       'doc_type',
       'doc_id',
     ]);
     res.json({
-      message: `Index: '${value.indexName}' has been created.`,
-      index_uid: `${value.indexName}`,
+      message: `Index: '${value.client_id}' has been created.`,
+      index_uid: `${value.client_id}`,
+      primary_key: 'doc_id',
     });
   } catch (error) {
     if (error.name === 'ValidationError') {
-      res.status(422);
+      res.status(409);
     }
     next(error);
   }

@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 });
 
 // APIs
-app.use('/api/v1/index', indx);
+app.use('/api/v1/client', indx);
 app.use('/api/v1/', docs);
 app.use('/api/v1/', search);
 
