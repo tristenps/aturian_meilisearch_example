@@ -1,7 +1,8 @@
 version: "3"
 services:
   web:
-    build: .
+    # build: .
+    image: node_meili_web:latest
     ports:
       - "8080:3100"
     depends_on:
