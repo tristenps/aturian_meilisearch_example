@@ -6,6 +6,10 @@ services:
       - "8080:3100"
     depends_on:
       - "meili"
+    environment:
+      - NODE_ENV=production
+      - PORT=3100
+      - MEILI_DOCKER_URL=http://meili:7700
 
   meili:
     image: getmeili/meilisearch
