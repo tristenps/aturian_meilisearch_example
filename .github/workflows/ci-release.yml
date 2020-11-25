@@ -50,11 +50,11 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
       -
         name: Build and push version
-        id: docker_build
+        id: docker_build_versioned
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: ${{ github.repository }}:${{ github.event.release.tag_name }}
       -
         name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+        run: echo ${{ steps.docker_build_versioned.outputs.digest }}
