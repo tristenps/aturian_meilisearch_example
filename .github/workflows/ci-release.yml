@@ -44,7 +44,17 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ github.repository }}:${{ github.event.release.tag_name }}
+          tags: ${{ github.repository }}:latest
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+      -
+        name: Build and push version
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ github.repository }}:${{ github.event.release.tag_name }}
+      -
+        name: Image digest
+       run: echo ${{ steps.docker_build.outputs.digest }}
