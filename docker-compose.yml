@@ -1,8 +1,7 @@
 version: "3"
 services:
   web:
-    # image: tristenps/aturian_meilisearch_example:latest
-    image: local/node_meili
+    image: tristenps/aturian_meilisearch_example:latest
     ports:
       - "8080:3100"
     depends_on:
