@@ -1,6 +1,7 @@
 # Custom
 data.ms
 examples
+.DS_Store
 
 # Logs
 logs
