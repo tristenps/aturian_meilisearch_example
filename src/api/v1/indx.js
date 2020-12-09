@@ -2,6 +2,8 @@ const { Router } = require('express');
 const MeiliSearch = require('meilisearch');
 const Joi = require('joi');
 
+const middlewares = require('../../middlewares.js');
+
 const schema = Joi.object({
   client_id: Joi.string().alphanum().required(),
 });
@@ -28,7 +30,7 @@ router.get('/', async (req, res, next) => {
 });
 
 // POST Create an index
-router.post('/', async (req, res, next) => {
+router.post('/', middlewares.checkJwt, middlewares.meiliAccess, async (req, res, next) => {
   try {
     const value = await schema.validateAsync(req.body);
     await client.createIndex(value.client_id, {

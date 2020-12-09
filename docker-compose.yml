@@ -12,7 +12,7 @@ services:
       - MEILI_DOCKER_URL=http://meili:7700
 
   meili:
-    image: getmeili/meilisearch
+    image: getmeili/meilisearch:latest
     ports:
       - "8081:7700"
     volumes:

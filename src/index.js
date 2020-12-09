@@ -8,6 +8,7 @@ const middlewares = require('./middlewares');
 const docs = require('./api/v1/document');
 const indx = require('./api/v1/indx');
 const search = require('./api/v1/search');
+const auth = require('./api/v1/auth');
 
 require('dotenv').config();
 
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 });
 
 // APIs
+app.use('/api/v1/auth/', auth);
 app.use('/api/v1/client', indx);
 app.use('/api/v1/', docs);
 app.use('/api/v1/', search);
