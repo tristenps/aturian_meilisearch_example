@@ -2,6 +2,8 @@ const { Router } = require('express');
 const MeiliSearch = require('meilisearch');
 const Joi = require('joi');
 
+const middlewares = require('../../middlewares.js');
+
 // Define validation Schema
 const searchSchema = Joi.object({
   searchParams: Joi.object({
@@ -26,7 +28,7 @@ const router = Router();
 
 // GET search request for a specific indexes documents
 //
-router.get('/:index_uid/search', async (req, res, next) => {
+router.get('/search', middlewares.checkJwt, middlewares.meiliAccess, async (req, res, next) => {
   try {
     const value = await searchSchema.validateAsync(req.body);
     const q = value.searchParams.query;
