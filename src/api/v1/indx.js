@@ -14,6 +14,7 @@ require('dotenv').config();
 // Connect to MeiliSearch client
 const client = new MeiliSearch({
   host: process.env.MEILI_DOCKER_URL,
+  apiKey: process.env.MEILI_MASTER_KEY,
 });
 
 // Setup Router to define all API calls for this endpoint
