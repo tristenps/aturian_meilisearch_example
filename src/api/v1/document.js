@@ -37,18 +37,26 @@ router.get('/documents', middlewares.checkJwt, middlewares.meiliAccess, async (r
   }
 });
 
-// POST a document to a specific index
+// POST an array of documents to their respective indices
 //
 
 router.post('/documents', middlewares.checkJwt, middlewares.meiliAccess, async (req, res, next) => {
   try {
-    const value = await documentsSchema.validateAsync(req.body.documents);
-    const index = await client.getIndex(req.body.client_id);
-    const response = await index.addDocuments(value);
+    const validated = await documentsSchema.validateAsync(req.body.documents);
+    const results = await Promise.all(validated.map(async (doc) => {
+      const postData = await client.getIndex(doc.client_id).addDocuments([{
+        doc_id: doc.doc_id,
+        client_id: doc.client_id,
+        doc_type: doc.doc_type,
+        OrderJson: doc.orderJson || '',
+        data: doc.data || '',
+      }]);
+      // eslint-disable-next-line
+      console.log(postData);
+    }));
     res.json({
-      message: `${value.length} document(s) added have been created.`,
-      service_message: response,
-      // stack: process.env.NODE_ENV === 'production' ? '' : response,
+      message: `${validated.length} document(s) added have been created.`,
+      service_message: results,
     });
   } catch (error) {
     if (error.name === 'ValidationError') {
