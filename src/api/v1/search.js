@@ -6,6 +6,7 @@ const middlewares = require('../../middlewares.js');
 
 // Define validation Schema
 const searchSchema = Joi.object({
+  client_id: Joi.alphanum().required(),
   searchParams: Joi.object({
     query: Joi.string().allow('').required(),
     offset: Joi.number(),
@@ -33,13 +34,14 @@ router.get('/search', middlewares.checkJwt, middlewares.meiliAccess, async (req,
   try {
     const value = await searchSchema.validateAsync(req.body);
     const q = value.searchParams.query;
+    const lowerClientId = value.client_id.toLowerCase();
     const searchParams = {
       offset: value.searchParams.offset || 0,
       limit: value.searchParams.limit || 50,
       filters: value.searchParams.filters || null,
       facetFilters: value.searchParams.facetFilters || null,
     };
-    const searchResults = await client.getIndex(req.params.index_uid).search(q, searchParams);
+    const searchResults = await client.getIndex(lowerClientId).search(q, searchParams);
     res.send(searchResults);
   } catch (error) {
     next(error);
