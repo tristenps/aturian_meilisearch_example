@@ -52,11 +52,32 @@ router.post('/documents', middlewares.checkJwt, middlewares.meiliAccess, async (
       // TODO: Remove after OrderJson is deprecated
       // Check which field to parse
       // When removing, update in body of postData
-      const parsedData = doc.OrderJson ? JSON.parse(doc.OrderJson) : JSON.parse(doc.data);
+      const parsedData = doc.OrderJson ? JSON.parse(doc.OrderJson) : JSON.parse(doc.Data);
 
-      const postData = await client.getIndex(doc.client_id).addDocuments([{
+      // Change client_id to lowercase
+      const lowerClientId = doc.client_id.toLowerCase();
+
+      // TODO: If client_id doesn't exist yet, create
+
+      try {
+        await client.createIndex(lowerClientId, {
+          primaryKey: 'doc_id',
+        });
+        // TODO: Create definitive list of faceted attributes
+        await client.getIndex(lowerClientId).updateAttributesForFaceting([
+          'client_id',
+          'doc_type',
+          'doc_id',
+        ]);
+      } catch (error) {
+        if (error.name !== 'MeiliSearchApiError') {
+          next(error);
+        }
+      }
+
+      const postData = await client.getIndex(lowerClientId).addDocuments([{
         doc_id: doc.doc_id,
-        client_id: doc.client_id,
+        client_id: lowerClientId,
         doc_type: doc.doc_type,
         data: parsedData,
       }]);
