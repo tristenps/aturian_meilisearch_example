@@ -6,7 +6,7 @@ const middlewares = require('../../middlewares.js');
 
 // Define validation Schema
 const searchSchema = Joi.object({
-  client_id: Joi.alphanum().required(),
+  client_id: Joi.string().alphanum().required(),
   searchParams: Joi.object({
     query: Joi.string().allow('').required(),
     offset: Joi.number(),
