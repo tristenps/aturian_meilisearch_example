@@ -21,7 +21,7 @@ const client = new MeiliSearch({
 const router = Router();
 
 // GET all indexes
-router.get('/', async (req, res, next) => {
+router.get('/', middlewares.checkJwt, async (req, res, next) => {
   try {
     const indexes = await client.listIndexes();
     res.send(indexes);
