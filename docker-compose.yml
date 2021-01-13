@@ -11,11 +11,12 @@ services:
       - PORT=3100
       - MEILI_DOCKER_URL=http://meili:7700
       - MEILI_MASTER_KEY=1234
+      - SALT=ABC
 
   meili:
     image: getmeili/meilisearch:v0.16.0
     ports:
-      - "8081:7700"
+      - "7700:7700"
     volumes:
       - ./data.ms:/data.ms
     environment:

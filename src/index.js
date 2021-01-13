@@ -22,9 +22,10 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// TODO: main / method should return all routes and their expected bodies
 app.get('/', (req, res) => {
   res.json({
-    message: 'Hello World!',
+    message: null,
   });
 });
 

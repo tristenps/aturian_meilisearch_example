@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const MeiliSearch = require('meilisearch');
 const Joi = require('joi');
+const crypto = require('crypto');
 
 const middlewares = require('../../middlewares.js');
 
@@ -13,6 +14,8 @@ const documentsSchema = Joi.array().items(Joi.object().keys({
 
 // Config all process.env values
 require('dotenv').config();
+
+const salt = process.env.SALT || '';
 
 // Connect to MeiliSearch Client
 const client = new MeiliSearch({
@@ -27,8 +30,9 @@ const router = Router();
 // Defaults to return first 50 results
 
 router.get('/documents', middlewares.checkJwt, middlewares.meiliAccess, async (req, res, next) => {
+  const hashClientId = crypto.createHash('sha1').update(req.body.client_id.toLowerCase() + salt).digest('hex');
   try {
-    const documents = await client.getIndex(req.body.client_id).getDocuments({
+    const documents = await client.getIndex(hashClientId).getDocuments({
       limit: req.body.limit || 50,
     });
     res.send(documents);
@@ -49,38 +53,47 @@ router.post('/documents', middlewares.checkJwt, middlewares.meiliAccess, async (
     const results = [];
 
     await Promise.all(validated.map(async (doc) => {
-      // TODO: Remove after OrderJson is deprecated
       // Check which field to parse
       // When removing, update in body of postData
       const parsedData = doc.OrderJson ? JSON.parse(doc.OrderJson) : JSON.parse(doc.Data);
 
-      // Change client_id to lowercase
+      // TODO: Create specific parsing rules for information pulled from data by doc_type
+      const { jobID, userEmail, salesman } = parsedData;
+
       const lowerClientId = doc.client_id.toLowerCase();
+      const hashClientId = crypto.createHash('sha1').update(lowerClientId + salt).digest('hex');
 
-      // TODO: If client_id doesn't exist yet, create
+      // TODO: Create definitive list of faceted attributes by doc_type?
+      const facets = ['client_id', 'doc_type', 'doc_id', 'salesman'];
 
+      // Check whether the index already exists, if not define appropriately
       try {
-        await client.createIndex(lowerClientId, {
-          primaryKey: 'doc_id',
+        await client.createIndex(hashClientId, {
+          primaryKey: 'uid',
         });
-        // TODO: Create definitive list of faceted attributes
-        await client.getIndex(lowerClientId).updateAttributesForFaceting([
-          'client_id',
-          'doc_type',
-          'doc_id',
-        ]);
+        await client.getIndex(hashClientId).updateAttributesForFaceting(facets);
       } catch (error) {
         if (error.name !== 'MeiliSearchApiError') {
           next(error);
         }
       }
 
-      const postData = await client.getIndex(lowerClientId).addDocuments([{
+      // TODO: Implement versioning?
+      // Would need to mark existing order document inactive
+      const version = '1';
+      const docUid = crypto.createHash('sha1').update(doc.doc_id.toLowerCase() + doc.client_id.toLowerCase() + doc.doc_type.toLowerCase() + version).digest('hex');
+      const document = {
+        uid: docUid,
         doc_id: doc.doc_id,
         client_id: lowerClientId,
         doc_type: doc.doc_type,
         data: parsedData,
-      }]);
+        jobID: jobID || null,
+        userEmail: userEmail || null,
+        salesmen: salesman || null,
+      };
+
+      const postData = await client.getIndex(hashClientId).addDocuments([document]);
       results.push(postData);
     }));
     res.json({
