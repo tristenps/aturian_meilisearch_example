@@ -57,7 +57,7 @@ router.get('/search', middlewares.checkJwt, middlewares.meiliAccess, async (req,
 // POST search for instantSearch
 router.post('/instantSearch/indexes/:client_id/search', async (req, res, next) => {
   try {
-    const hashClientId = crypto.createHash('sha1').update('ib'.toLowerCase() + salt).digest('hex');
+    const hashClientId = crypto.createHash('sha1').update('demo'.toLowerCase() + salt).digest('hex');
     if (hashClientId === req.params.client_id) {
       const {
         q,
