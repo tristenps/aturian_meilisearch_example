@@ -30,8 +30,8 @@ const router = Router();
 // Defaults to return first 50 results
 
 router.get('/documents', middlewares.checkJwt, middlewares.meiliAccess, async (req, res, next) => {
-  const hashClientId = crypto.createHash('sha1').update(req.body.client_id.toLowerCase() + salt).digest('hex');
   try {
+    const hashClientId = crypto.createHash('sha1').update(req.body.client_id.toLowerCase() + salt).digest('hex');
     const documents = await client.getIndex(hashClientId).getDocuments({
       limit: req.body.limit || 50,
     });
