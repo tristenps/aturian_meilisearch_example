@@ -16,7 +16,7 @@ services:
   meili:
     image: getmeili/meilisearch:v0.16.0
     ports:
-      - "7700:7700"
+      - "8081:7700"
     volumes:
       - ./data.ms:/data.ms
     environment:
