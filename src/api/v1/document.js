@@ -58,13 +58,36 @@ router.post('/documents', middlewares.checkJwt, middlewares.meiliAccess, async (
       const parsedData = doc.OrderJson ? JSON.parse(doc.OrderJson) : JSON.parse(doc.Data);
 
       // TODO: Create specific parsing rules for information pulled from data by doc_type
-      const { jobID, userEmail, salesman } = parsedData;
+      const { jobID, userEmail, salesmanName } = parsedData;
+
+      const itemSummary = [];
+      const suppSummary = [];
+      const shipSummary = [];
+
+      if (doc.doc_type === 'order') {
+        try {
+          parsedData.orderItem.forEach((item) => {
+            itemSummary.push(item.itemTitle);
+            suppSummary.push(item.orderItemVendor.name);
+            // eslint-disable-next-line prefer-template
+            shipSummary.push([item.orderItemAddress.shippingAttention,
+              item.orderItemAddress.shippingCompany,
+              item.orderItemAddress.shippingStreet1,
+              item.orderItemAddress.shippingStreet2,
+              item.orderItemAddress.shippingCity,
+              item.orderItemAddress.shippingState,
+              item.orderItemAddress.shippingPostal].filter((a) => a).join(' '));
+          });
+        } catch (error) {
+          // No items found
+        }
+      }
 
       const lowerClientId = doc.client_id.toLowerCase();
       const hashClientId = crypto.createHash('sha1').update(lowerClientId + salt).digest('hex');
 
       // TODO: Create definitive list of faceted attributes by doc_type?
-      const facets = ['client_id', 'doc_type', 'doc_id', 'salesman'];
+      const facets = ['client_id', 'doc_type', 'doc_id', 'salesmanName'];
 
       // Check whether the index already exists, if not define appropriately
       try {
@@ -90,7 +113,10 @@ router.post('/documents', middlewares.checkJwt, middlewares.meiliAccess, async (
         data: parsedData,
         jobID: jobID || null,
         userEmail: userEmail || null,
-        salesmen: salesman || null,
+        salesmanName: salesmanName || null,
+        itemSummary: [...new Set(itemSummary)].join(', '),
+        suppSummary: [...new Set(suppSummary)].join(', '),
+        shipSummary: [...new Set(shipSummary)].join(', '),
       };
 
       const postData = await client.getIndex(hashClientId).addDocuments([document]);
