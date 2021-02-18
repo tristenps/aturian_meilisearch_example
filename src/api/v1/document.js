@@ -107,16 +107,16 @@ router.post('/documents', middlewares.checkJwt, middlewares.meiliAccess, async (
       const docUid = crypto.createHash('sha1').update(doc.doc_id.toLowerCase() + doc.client_id.toLowerCase() + doc.doc_type.toLowerCase() + version).digest('hex');
       const document = {
         uid: docUid,
-        doc_id: doc.doc_id,
-        client_id: lowerClientId,
-        doc_type: doc.doc_type,
-        data: parsedData,
-        jobID: jobID || null,
-        userEmail: userEmail || null,
-        salesmanName: salesmanName || null,
+        doc_id: doc.doc_id, // This would go away with the ... expansion
+        client_id: lowerClientId, // This as well
+        doc_type: doc.doc_type, // This as well
+        jobID: jobID || null, // this as well
+        userEmail: userEmail || null, // this as well
+        salesmanName: salesmanName || null, // this as well
         itemSummary: [...new Set(itemSummary)].join(', '),
         suppSummary: [...new Set(suppSummary)].join(', '),
         shipSummary: [...new Set(shipSummary)].join(', '),
+        ...parsedData,
       };
 
       const postData = await client.getIndex(hashClientId).addDocuments([document]);
